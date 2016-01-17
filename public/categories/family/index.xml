@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Family on Chris Snell</title>
+    <link>https://chrissnell.com/categories/family/</link>
+    <description>Recent content in Family on Chris Snell</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 27 Jul 2013 00:00:00 -0800</lastBuildDate>
+    <atom:link href="https://chrissnell.com/categories/family/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Summer Days</title>
+      <link>https://chrissnell.com/post/swimming-with-evan/</link>
+      <pubDate>Sat, 27 Jul 2013 00:00:00 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/swimming-with-evan/</guid>
+      <description>
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/evan_swimming.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+</description>
+    </item>
+    
+    <item>
+      <title>Quad Latte</title>
+      <link>https://chrissnell.com/post/evan-drinks-coffee/</link>
+      <pubDate>Mon, 15 Apr 2013 00:21:57 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/evan-drinks-coffee/</guid>
+      <description>
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/evan_coffee.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+</description>
+    </item>
+    
+  </channel>
+</rss>

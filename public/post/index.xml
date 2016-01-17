@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Chris Snell</title>
+    <link>https://chrissnell.com/post/</link>
+    <description>Recent content in Posts on Chris Snell</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 10 Aug 2014 00:00:00 -0800</lastBuildDate>
+    <atom:link href="https://chrissnell.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Debugging APRS clients with a virtual null-modem cable using socat and tnc-server</title>
+      <link>https://chrissnell.com/post/debugging-aprs-clients/</link>
+      <pubDate>Sun, 10 Aug 2014 00:00:00 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/debugging-aprs-clients/</guid>
+      <description>&lt;p&gt;While working on my &lt;a href=&#34;http://github.com/chrissnell/GoBalloon&#34;&gt;GoBalloon&lt;/a&gt; project, I found myself needing to connect two AX.25/KISS APRS clients together for debugging purposes. &amp;nbsp; If your computer has two hardware RS-232 serial ports, you can accomplish this by connecting a null modem cable between the two ports and connecting an APRS client to each port. &amp;nbsp; I discovered an easier way to do this today and you don&amp;rsquo;t even need a serial port at all. &amp;nbsp; The trick is to use the &lt;strong&gt;socat&lt;/strong&gt; utility. &amp;nbsp;socat is available in most Linux distros and there are a few Windows ports out there, as well.&lt;/p&gt;
+
+&lt;p&gt;To create the virtual null modem cable, run socat like this:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;% socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/3
+2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/4
+2014/08/10 19:08:28 socat[25083] N starting data transfer loop with FDs [3,3] and [5,5]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see above, socat will respond with two virtual serial ports (ptys). &amp;nbsp;In the example above, they are /dev/pts/3 and /dev/pts/4.&lt;/p&gt;
+
+&lt;p&gt;Once you have those, simply fire up your APRS clients and connect each of them to one of those virtual ports. &amp;nbsp; Everything sent by one client will be copied to the other client and vice-versa.&lt;/p&gt;
+
+&lt;p&gt;If you are debugging an APRS client that uses KISS-over-TCP, you can use my &lt;a href=&#34;http://github.com/chrissnell/tnc-server&#34;&gt;tnc-server&lt;/a&gt; utility to bridge the virtual serial port and the network. &amp;nbsp;Simply tell tnc-server to attach to one of those virtual ports and it will open a network listener that you can connect your KISS-over-TCP client&amp;nbsp;to:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;./tnc-server -port=/dev/pts/3 -listen=0.0.0.0:6700
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&amp;nbsp;If you want to attach two KISS-over-TCP clients to each other, simply fire up a second instance of tnc-server that listens on a different port.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt; ./tnc-server -port=/dev/pts/4 -listen=0.0.0.0:6701
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;From there, connect one APRS client to &amp;nbsp;&amp;lt;your_machines_IP&amp;gt; &amp;nbsp;port 6700 and the other client to port 6701.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Jack-of-All-Trades Home Server</title>
+      <link>https://chrissnell.com/post/jack-of-all-trades-server/</link>
+      <pubDate>Tue, 31 Dec 2013 00:21:57 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/jack-of-all-trades-server/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been wanting to build a server for my home for a while and I finally got around to it over the holidays. &amp;nbsp; My goal was to ditch all of the aging equipment in my office and consolidate it into one powerful, do-it-all machine. &amp;nbsp;It took several days of hacking to get it all working but now it lives:&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/server.jpg&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;The Server&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Consolidation&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Before this server, I had a bunch of old, crap hardware running in my office. &amp;nbsp;The gear was a decade old and couldn&amp;rsquo;t keep up with modern Internet speeds and the new applications. &amp;nbsp; I decided to use VMware&amp;rsquo;s (free!) &lt;a href=&#34;http://www.vmware.com/products/vsphere-hypervisor/overview.html&#34;&gt;ESXi hypervisor&lt;/a&gt; to consolidate all of this old junk onto one box. &amp;nbsp; Onto this one server, I consolidated:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Software development server (&lt;a href=&#34;http://www.ubuntu.com/&#34;&gt;Ubuntu Linux&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;Password+Wireless cracking/Security server (&lt;a href=&#34;http://backtrack-linux.org/&#34;&gt;Backtrack Linux&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;Media server (&lt;a href=&#34;http://freebsd.org&#34;&gt;FreeBSD&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;Firewall + VPN (&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt;)&amp;nbsp;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To run all of these things and run them well, I needed some big iron. &amp;nbsp;Here&amp;rsquo;s what I built:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.supermicro.com/products/motherboard/xeon/c600/x9srh-7f.cfm&#34;&gt;Supermicro X9SRH-7F&lt;/a&gt; server-class motherboard&lt;/li&gt;
+&lt;li&gt;Intel Xeon E5-2620 hex-core server-class CPU&lt;/li&gt;
+&lt;li&gt;32 GB Kingston DDR3 1600 MHz ECC RAM&lt;/li&gt;
+&lt;li&gt;4 x 2 TB Western Digital &amp;ldquo;Red&amp;rdquo; server-class hard disks (RAID 10)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;Gigabyte/AMD%20Radeon%20HD7970&#34;&gt;Gigabyte/AMD Radeon HD7970&lt;/a&gt; video card (for GPU-assisted password cracking, more on that later&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Intel I340-T4 quad-port 1000 Mbit ethernet adapter (PCIe)&lt;/li&gt;
+&lt;li&gt;Corsair HX1050 power supply (1050 Watt)&lt;/li&gt;
+&lt;li&gt;Supermicro CPU heatsink for narrow-profile LGA2011 CPU&lt;/li&gt;
+&lt;li&gt;Corsair 600T mid-tower case&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This machine is a monster. &amp;nbsp; Even running all of these virtual servers, its resources aren&amp;rsquo;t even 10% utilized.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Firewall&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;My old firewall was a Soekris net4801 appliance (circa 2003) running m0n0wall. &amp;nbsp;It protected my home network for ten years, never once crashing. &amp;nbsp; The only real problem with it was that it can no longer keep up with modern home Internet speeds. &amp;nbsp;&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/soekris.jpg&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;Soekris net4801&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;These days, we have a 35 Mbps connection at the house but the Soekris tops out at a little over 21 Mbps. &amp;nbsp;When it maxed out its power, packets would drop and the Internet got flakey. &amp;nbsp;I wanted something that could handle 100+ Mbps with ease. &amp;nbsp; This new machine, with its four-port server-grade Intel NIC was the ticket. &amp;nbsp;With a tiny 1 VCPU, 1 GB VRAM virtual machine running pfSense, I can now push data as fast as Comcast will allow.&lt;/p&gt;
+
+&lt;p&gt;The old Soekris firewall:&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/speedtest_soekris.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;The new, virtualized pfSense firewall:&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/speedtest_pfsense.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;The trickest part about running a firewall under ESXi is getting the networking correct. &amp;nbsp;The best (and in my opinion, most secure) way to do this is to use dedicated NICs for each network. &amp;nbsp;I use one port for my WAN (cable modem) and another for the LAN (internal private network). &amp;nbsp; I have another network, the DMZ, for servers that I don&amp;rsquo;t trust enough to run on the private network. &amp;nbsp;The Backtrack Linux VM goes here. &amp;nbsp;I use ESXi&amp;rsquo;s virtual switching to connect VMs to NICs:&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/vSwitch.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;The arrangement works well. &amp;nbsp;I get great throughput on the firewall and moving a machine between networks takes only a couple of mouse clicks.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Backtrack Server (My Very Own Evil Mad Scientist Laboratory)&lt;/strong&gt;&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/backtrack-linux-logo.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;I&amp;rsquo;ve been playing around with &lt;a href=&#34;http://backtrack-linux.org&#34;&gt;Backtrack Linux&lt;/a&gt; for a while now. &amp;nbsp;For those that don&amp;rsquo;t know, Backtrack is a Linux operating system designed for electronic security work. &amp;nbsp; It comes with a massive selection of exploitation, forensics, snooping, and analysis tools pre-installed. &amp;nbsp;If you were so inclined, Backtrack has most of what you need to break into networks and cause major havoc. &amp;nbsp;For its more altrustic users, it&amp;rsquo;s a outstanding toolkit to test your network&amp;rsquo;s security. &amp;nbsp; Ever wonder if someone can crack your WiFi key and snoop around on your home PC? &amp;nbsp;Backtrack has the tools you need to find out. &amp;nbsp;By running exploits against your own network and understanding its vulnerabilities, you can better secure your data.&lt;/p&gt;
+
+&lt;p&gt;One of my favorite tools on BT is &lt;a href=&#34;http://code.google.com/p/pyrit/&#34;&gt;Pyrit&lt;/a&gt;. &amp;nbsp;Pyrit is an open-source password cracker capable of cracking WEP, WPA, and WPA2 passwords for WiFi networks. &amp;nbsp;The superhero power of Pyrit is its ability to use your computer&amp;rsquo;s graphics card (GPU) to greatly accelerate the speed of password cracking. &amp;nbsp; A good GPU (like my ATI HD7970) can test passwords &lt;em&gt;hundreds of times faster&lt;/em&gt; than the average PC CPU. &amp;nbsp;With this kind of power, it&amp;rsquo;s possible to bruteforce crack a password in a few days that might have taken years to crack on a conventional PC. &amp;nbsp;On an even more sinister note, Pyrit allows you to cluster multiple GPUs running on multiple servers together, potentially creating a massive password-cracking machine. &amp;nbsp; My ATI HD7970 is the fastest GPU available on the consumer market, yet it only costs $400 on Amazon. &amp;nbsp; Can you imagine what a rogue state like North Korea could do if they got their hands on a few dozen of these cards? &amp;nbsp; A security firm &lt;a href=&#34;http://www.techspot.com/news/51044-25-gpu-cluster-can-brute-force-windows-password-in-record-time.html&#34;&gt;recently clustered 25 GPUs together&lt;/a&gt; and achieved 350 billion password guesses per second&amp;ndash;fast enough to crack &lt;strong&gt;any&lt;/strong&gt; Windows password in five and a half hours. &amp;nbsp; Very powerful stuff. &amp;nbsp; Very scary. &amp;nbsp;I had to build my own.&lt;/p&gt;
+
+&lt;p&gt;The biggest challenge I faced in my project was getting the HD7970 to be available to my Backtrack virtual machine. &amp;nbsp; ESXi provides a mechanism called &amp;ldquo;pass-thru&amp;rdquo; that lets you designate a VM to control a device like a GPU. &amp;nbsp; Unfortunately, the mechanism is poorly documented and I spent several days experimenting before I got it to work. &amp;nbsp; In the end, I had to enable pass-thru for the GPU devices and I had to add a line into the VM&amp;rsquo;s .vnx file:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;pciHole.start = &amp;quot;2853&amp;quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;I won&amp;rsquo;t go into the particulars of how I determined this value but you can find it if you Google around. There&amp;rsquo;s a procedure for editing .vnx files that you&amp;rsquo;ll need to follow. Again, Google it. &amp;nbsp; Once you get the hole &amp;ldquo;punched&amp;rdquo; and pass-thru working, you&amp;rsquo;ll need to install the ATI drivers and SDK on the VM. &amp;nbsp; The biggest problem I ran into is that the newest version of the SDK is needed to support this card, but this newest version is missing some critical libraries that are necessary to get &lt;a href=&#34;http://calpp.sourceforge.net/&#34;&gt;CAL++&lt;/a&gt; and OpenCL working. &amp;nbsp; What I did was install the older (more complete) SDK and then installed the newest version on top of that, which gave me everything I needed. &amp;nbsp; I also had to install the beta release of the ATI drivers because they&amp;rsquo;re the only version that supports the HD7970. &amp;nbsp;Finally (and this was a big, big stumper for me), I realized that I had to be actually running the Xorg X11 server (i.e. displaying a desktop on a monitor) for CAL++ and Pyrit to be able to &amp;ldquo;see&amp;rdquo; the GPU. &amp;nbsp;(Sorry for the tangent there, but I put all that in there to help the next guy who tries to do all of this.)&lt;/p&gt;
+
+&lt;p&gt;Once the GPU is working under Backtrack, you can run Pyrit&amp;rsquo;s benchmark and see some dramatic numbers:&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/btlinux_desktop.jpg&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;The Backtrack Linux desktop&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;That first benchmark is my GPU. &amp;nbsp; As you can see, it&amp;rsquo;s over 200x faster than the cores in my server&amp;rsquo;s Intel CPU.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Future Possibilities&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;My server is not yet perfect. &amp;nbsp;Of all simple things, I haven&amp;rsquo;t yet figured out how to pass my motherboard&amp;rsquo;s USB controller through to the VM, so I can&amp;rsquo;t use a mouse or USB keyboard. &amp;nbsp;Unable to attach my mouse to Backtrack, I eventually came up with the idea to use &lt;a href=&#34;synergy-foss.org/&#34;&gt;Synergy&lt;/a&gt; to share my Mac Pro&amp;rsquo;s mouse and keyboard with the X11 server on the BT VM. &amp;nbsp; Since USB isn&amp;rsquo;t working, I can&amp;rsquo;t attach my Alfa AWUS036H USB wireless adapter to the Backtrack machine, so I can&amp;rsquo;t directly capture WiFi packets on the VM. &amp;nbsp; Instead, I have to use my Macbook Pro to capture the traffic and manually copy the pcap files to the BT VM. &amp;nbsp; In the future, I plan on setting up an IPsec VPN for the house and using the VPN to allow me to access the power of the big GPU from wherever I am in the field. &amp;nbsp; I might even be able to get Pyrix clustering working over the VPN.&lt;/p&gt;
+
+&lt;p&gt;The ESXi platform gives me great flexibility for future expansion. &amp;nbsp; If an operating system can run on a modern PC, it can probably run virtualized under ESXi. &amp;nbsp; If I ever have a need for it, I might fire up another VM and install Windows Server for my home network. &amp;nbsp;ESXi can even run Mac OS X! &amp;nbsp;I&amp;rsquo;m super-happy with my decision to consolidate and I&amp;rsquo;m loving my much-less-cluttered office.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Stop piping curl to /bin/sh</title>
+      <link>https://chrissnell.com/post/stop-piping-curl-to-sh/</link>
+      <pubDate>Tue, 24 Dec 2013 00:00:00 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/stop-piping-curl-to-sh/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve noticed a trend lately where software developers ask you to pipe the output of a HTTP GET to a shell to install their software. &amp;nbsp;It&amp;rsquo;s certainly convenient for the inexperienced shell user who might not be comfortable with Apt or Homebrew; never mind that we spent the late 1990s and 2000s building these tools that make it easy to install software! &amp;nbsp;The pipe-to-shell method is definitely the new hotness but this idiotic method has been around for a while. &amp;nbsp; When I was a clueless freshman at Vanderbilt in 1993, I used this technique install an IRC client on a SunOS machine in the computer lab like a total noob:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt; telnet sci.dixie.edu 1 | sh 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At the time, I had no idea what that command did and I happily ran it. &amp;nbsp; Did it install a backdoor into my account on the VUSE systems? &amp;nbsp;Maybe. &amp;nbsp;It would have been ridiculously easy for the Dixie admins to do that. &amp;nbsp; It was a pretty spiffy shar(1) archive that packaged up some binaries and shell scripts in a uuencoded shell package. &amp;nbsp;All I knew is I ran that command and a bunch of shit scrolled across my screen for a few minutes and when it was done, I had an IRC client and I was happy. &amp;nbsp;&lt;/p&gt;
+
+&lt;p&gt;Sure, you could fetch the URL in your browser first and review the shell script but will most people do this? &amp;nbsp; How good are you at quickly reading a shell script? &amp;nbsp; Could you spot a well-hidden backdoor, a little bit of obfuscation tucked away in the middle of a huge regex?&lt;/p&gt;
+
+&lt;p&gt;The pipe-to-shell technique is showing up more and more these days. &amp;nbsp;RVM uses it&amp;hellip;&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/curlsh_rvm.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;So does CopperEgg&amp;hellip;&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/curlsh_copperegg.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;pip uses a variation of this&amp;ndash;only slightly less degenerate&amp;ndash;where they ask you to download and execute some Python&amp;hellip;&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/curlsh_pip.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;To be fair, pip is also available through popular package managers but they&amp;rsquo;re still pushing this method first to new users.&lt;/p&gt;
+
+&lt;p&gt;Why are we doing this? &amp;nbsp;It&amp;rsquo;s terrible from both security and maintainability perspective. &amp;nbsp; If a committer of one of these popular software packages gets their desktop 0wned, the users of their software might very well get rootkits installed on their servers without their knownlege.&lt;/p&gt;
+
+&lt;p&gt;What&amp;rsquo;s so wrong with good old apt and yum? &amp;nbsp;Unlike the pipe-to-shell method, these repositories have measures in place to authenticate packages and the very nature of a package allows the sysadmin to cleanly uninstall it at a later date.&lt;/p&gt;
+
+&lt;p&gt;Please stop piping curl(1) to sh(1) before it really &lt;a href=&#34;https://www.youtube.com/watch?v=nG-4p4Er3VY&#34;&gt;becomes a thing&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Summer Days</title>
+      <link>https://chrissnell.com/post/swimming-with-evan/</link>
+      <pubDate>Sat, 27 Jul 2013 00:00:00 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/swimming-with-evan/</guid>
+      <description>
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/evan_swimming.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+</description>
+    </item>
+    
+    <item>
+      <title>The New Ride</title>
+      <link>https://chrissnell.com/post/the-new-ride/</link>
+      <pubDate>Wed, 01 May 2013 00:00:00 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/the-new-ride/</guid>
+      <description>
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/newride.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+</description>
+    </item>
+    
+    <item>
+      <title>Quad Latte</title>
+      <link>https://chrissnell.com/post/evan-drinks-coffee/</link>
+      <pubDate>Mon, 15 Apr 2013 00:21:57 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/evan-drinks-coffee/</guid>
+      <description>
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/evan_coffee.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+</description>
+    </item>
+    
+    <item>
+      <title>Happy New Year</title>
+      <link>https://chrissnell.com/post/happy-new-year/</link>
+      <pubDate>Mon, 31 Dec 2012 00:21:57 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/happy-new-year/</guid>
+      <description>
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/happynewyear.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+</description>
+    </item>
+    
+    <item>
+      <title>White Christmas</title>
+      <link>https://chrissnell.com/post/white-christmas/</link>
+      <pubDate>Tue, 25 Dec 2012 00:21:57 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/white-christmas/</guid>
+      <description>&lt;p&gt;
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/plowtruck.jpg&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;Snow Plow Truck&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+I&amp;rsquo;m dreaming of a white Christmas…&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Homebrew AVR Programmer</title>
+      <link>https://chrissnell.com/post/homebrew-avr-programmer/</link>
+      <pubDate>Sat, 01 Dec 2012 00:00:00 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/homebrew-avr-programmer/</guid>
+      <description>&lt;p&gt;I finally got around to building a little&amp;nbsp;&lt;a href=&#34;http://en.wikipedia.org/wiki/Atmel_AVR&#34;&gt;Atmel AVR&lt;/a&gt;&amp;nbsp;chip programmer using some perfboard and a ZIF socket. &amp;nbsp; Using&amp;nbsp;&lt;a href=&#34;http://www.google.com/url?sa=t&amp;amp;amp;rct=j&amp;amp;amp;q=&amp;amp;amp;esrc=s&amp;amp;amp;source=web&amp;amp;amp;cd=1&amp;amp;amp;ved=0CC8QFjAA&amp;amp;amp;url=http%3A%2F%2Fwww.obdev.at%2Fproducts%2Fcrosspack%2Findex.html&amp;amp;amp;ei=daq5UKbAGKK6yQG_24GoBA&amp;amp;amp;usg=AFQjCNGYKbcitvOX-SQpY9TlxHGJIQwjzg&#34;&gt;CrossPack&amp;rsquo;s&lt;/a&gt;&amp;nbsp;gcc cross-compiler, I can now compile for the AVR chips on my Mac and burn them directly to the chip without using a Linux or Windows VM.&lt;/p&gt;
+
+&lt;p&gt;I designed the programmer so that it can handle ATtiny25/45/85/2313 and ATmega48/88/168/328 chips, all in the same ZIF socket. &amp;nbsp;Spiffy.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/avr_top.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://chrissnell.com/images/post/avr_bottom.jpg&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+&lt;/p&gt;
+
+&lt;p&gt;My programmer connects to the Mac via a&amp;nbsp;&lt;a href=&#34;https://www.sparkfun.com/products/9825&#34;&gt;Pocket AVR Programmer&lt;/a&gt;&amp;nbsp;from Sparkfun.&lt;/p&gt;
+
+&lt;p&gt;For what it&amp;rsquo;s worth, here is how I burn a compiled .hex image to an ATtiny2313 chip:&lt;/p&gt;
+
+&lt;pre&gt;avrdude -p attiny2313 -c usbtiny -U flash:w:FILENAME_TO_BURN&lt;/pre&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an example how how I set the fuses on the chip:&lt;/p&gt;
+
+&lt;pre&gt;avrdude -p attiny2313 -c usbtiny -U lfuse:w:0xe4:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

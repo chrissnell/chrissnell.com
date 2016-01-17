@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Software on Chris Snell</title>
+    <link>https://chrissnell.com/tags/software/</link>
+    <description>Recent content in Software on Chris Snell</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 10 Aug 2014 00:00:00 -0800</lastBuildDate>
+    <atom:link href="https://chrissnell.com/tags/software/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Debugging APRS clients with a virtual null-modem cable using socat and tnc-server</title>
+      <link>https://chrissnell.com/post/debugging-aprs-clients/</link>
+      <pubDate>Sun, 10 Aug 2014 00:00:00 -0800</pubDate>
+      
+      <guid>https://chrissnell.com/post/debugging-aprs-clients/</guid>
+      <description>&lt;p&gt;While working on my &lt;a href=&#34;http://github.com/chrissnell/GoBalloon&#34;&gt;GoBalloon&lt;/a&gt; project, I found myself needing to connect two AX.25/KISS APRS clients together for debugging purposes. &amp;nbsp; If your computer has two hardware RS-232 serial ports, you can accomplish this by connecting a null modem cable between the two ports and connecting an APRS client to each port. &amp;nbsp; I discovered an easier way to do this today and you don&amp;rsquo;t even need a serial port at all. &amp;nbsp; The trick is to use the &lt;strong&gt;socat&lt;/strong&gt; utility. &amp;nbsp;socat is available in most Linux distros and there are a few Windows ports out there, as well.&lt;/p&gt;
+
+&lt;p&gt;To create the virtual null modem cable, run socat like this:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;% socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/3
+2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/4
+2014/08/10 19:08:28 socat[25083] N starting data transfer loop with FDs [3,3] and [5,5]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see above, socat will respond with two virtual serial ports (ptys). &amp;nbsp;In the example above, they are /dev/pts/3 and /dev/pts/4.&lt;/p&gt;
+
+&lt;p&gt;Once you have those, simply fire up your APRS clients and connect each of them to one of those virtual ports. &amp;nbsp; Everything sent by one client will be copied to the other client and vice-versa.&lt;/p&gt;
+
+&lt;p&gt;If you are debugging an APRS client that uses KISS-over-TCP, you can use my &lt;a href=&#34;http://github.com/chrissnell/tnc-server&#34;&gt;tnc-server&lt;/a&gt; utility to bridge the virtual serial port and the network. &amp;nbsp;Simply tell tnc-server to attach to one of those virtual ports and it will open a network listener that you can connect your KISS-over-TCP client&amp;nbsp;to:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;./tnc-server -port=/dev/pts/3 -listen=0.0.0.0:6700
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&amp;nbsp;If you want to attach two KISS-over-TCP clients to each other, simply fire up a second instance of tnc-server that listens on a different port.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt; ./tnc-server -port=/dev/pts/4 -listen=0.0.0.0:6701
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;From there, connect one APRS client to &amp;nbsp;&amp;lt;your_machines_IP&amp;gt; &amp;nbsp;port 6700 and the other client to port 6701.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

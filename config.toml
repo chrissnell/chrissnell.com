@@ -1,0 +1,10 @@
+baseurl = "https://chrissnell.com/"
+canonifyurls = true
+languageCode = "en-us"
+title = "Chris Snell"
+theme = "hyde"
+Paginate = 10
+
+[params]
+  themeColor = "theme-base-0g"
+  description = "Love of family, code, and old Land Rovers"
