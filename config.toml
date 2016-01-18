@@ -4,6 +4,7 @@ languageCode = "en-us"
 title = "Chris Snell"
 theme = "hyde"
 Paginate = 10
+pygmentsuseclasses = true
 
 [params]
   themeColor = "theme-base-0g"
