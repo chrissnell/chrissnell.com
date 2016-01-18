@@ -1,0 +1,15 @@
+<div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <a href="{{ .Site.BaseURL }}"><h1>{{ .Site.Title }}</h1></a>
+      <p class="lead">
+      {{ with .Site.Params.description }} {{.}} {{ else }}An elegant open source and mobile first theme for <a href="http://hugo.spf13.com">hugo</a> made by <a href="http://twitter.com/mdo">@mdo</a>. Originally made for Jekyll.{{end}}
+      </p>
+      <div class="sidebar-links">
+        <h3 class="links">github: <a href="https://github.com/chrissnell">chrissnell</a></h3>
+        <h3 class="links">twitter: <a href="https://twitter.com/chrissnell">@chrissnell</a></h3>
+     </div>
+ </div>
+    <p>{{ with .Site.Params.copyright }}{{.}}{{ else }}&copy; {{.Now.Format "2006"}}. All rights reserved. {{end}}</p>
+  </div>
+</div>
