@@ -35,12 +35,13 @@
 
 &lt;p&gt;To create the virtual null modem cable, run socat like this:&lt;/p&gt;
 
-&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;% socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+% socat -d -d pty,raw,echo=0 pty,raw,echo=0
 
 2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/3
 2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/4
 2014/08/10 19:08:28 socat[25083] N starting data transfer loop with FDs [3,3] and [5,5]
-&lt;/pre&gt;&lt;/div&gt;
+
 
 
 &lt;p&gt;As you can see above, socat will respond with two virtual serial ports (ptys). &amp;nbsp;In the example above, they are /dev/pts/3 and /dev/pts/4.&lt;/p&gt;
@@ -49,14 +50,14 @@
 
 &lt;p&gt;If you are debugging an APRS client that uses KISS-over-TCP, you can use my &lt;a href=&#34;http://github.com/chrissnell/tnc-server&#34;&gt;tnc-server&lt;/a&gt; utility to bridge the virtual serial port and the network. &amp;nbsp;Simply tell tnc-server to attach to one of those virtual ports and it will open a network listener that you can connect your KISS-over-TCP client&amp;nbsp;to:&lt;/p&gt;
 
-&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;./tnc-server -port=/dev/pts/3 -listen=0.0.0.0:6700
-&lt;/pre&gt;&lt;/div&gt;
+
+./tnc-server -port=/dev/pts/3 -listen=0.0.0.0:6700
 
 
 &lt;p&gt;&amp;nbsp;If you want to attach two KISS-over-TCP clients to each other, simply fire up a second instance of tnc-server that listens on a different port.&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt; ./tnc-server -port=/dev/pts/4 -listen=0.0.0.0:6701
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;
+ ./tnc-server -port=/dev/pts/4 -listen=0.0.0.0:6701
 &lt;/p&gt;
 
 &lt;p&gt;From there, connect one APRS client to &amp;nbsp;&amp;lt;your_machines_IP&amp;gt; &amp;nbsp;port 6700 and the other client to port 6701.&lt;/p&gt;
@@ -222,8 +223,8 @@
       <guid>https://chrissnell.com/post/stop-piping-curl-to-sh/</guid>
       <description>&lt;p&gt;I&amp;rsquo;ve noticed a trend lately where software developers ask you to pipe the output of a HTTP GET to a shell to install their software. &amp;nbsp;It&amp;rsquo;s certainly convenient for the inexperienced shell user who might not be comfortable with Apt or Homebrew; never mind that we spent the late 1990s and 2000s building these tools that make it easy to install software! &amp;nbsp;The pipe-to-shell method is definitely the new hotness but this idiotic method has been around for a while. &amp;nbsp; When I was a clueless freshman at Vanderbilt in 1993, I used this technique install an IRC client on a SunOS machine in the computer lab like a total noob:&lt;/p&gt;
 
-&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt; telnet sci.dixie.edu 1 | sh 
-&lt;/pre&gt;&lt;/div&gt;
+
+ telnet sci.dixie.edu 1 | sh 
 
 
 &lt;p&gt;At the time, I had no idea what that command did and I happily ran it. &amp;nbsp; Did it install a backdoor into my account on the VUSE systems? &amp;nbsp;Maybe. &amp;nbsp;It would have been ridiculously easy for the Dixie admins to do that. &amp;nbsp; It was a pretty spiffy shar(1) archive that packaged up some binaries and shell scripts in a uuencoded shell package. &amp;nbsp;All I knew is I ran that command and a bunch of shit scrolled across my screen for a few minutes and when it was done, I had an IRC client and I was happy. &amp;nbsp;&lt;/p&gt;

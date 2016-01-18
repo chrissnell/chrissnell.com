@@ -17,8 +17,8 @@
       <guid>https://chrissnell.com/post/stop-piping-curl-to-sh/</guid>
       <description>&lt;p&gt;I&amp;rsquo;ve noticed a trend lately where software developers ask you to pipe the output of a HTTP GET to a shell to install their software. &amp;nbsp;It&amp;rsquo;s certainly convenient for the inexperienced shell user who might not be comfortable with Apt or Homebrew; never mind that we spent the late 1990s and 2000s building these tools that make it easy to install software! &amp;nbsp;The pipe-to-shell method is definitely the new hotness but this idiotic method has been around for a while. &amp;nbsp; When I was a clueless freshman at Vanderbilt in 1993, I used this technique install an IRC client on a SunOS machine in the computer lab like a total noob:&lt;/p&gt;
 
-&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt; telnet sci.dixie.edu 1 | sh 
-&lt;/pre&gt;&lt;/div&gt;
+
+ telnet sci.dixie.edu 1 | sh 
 
 
 &lt;p&gt;At the time, I had no idea what that command did and I happily ran it. &amp;nbsp; Did it install a backdoor into my account on the VUSE systems? &amp;nbsp;Maybe. &amp;nbsp;It would have been ridiculously easy for the Dixie admins to do that. &amp;nbsp; It was a pretty spiffy shar(1) archive that packaged up some binaries and shell scripts in a uuencoded shell package. &amp;nbsp;All I knew is I ran that command and a bunch of shit scrolled across my screen for a few minutes and when it was done, I had an IRC client and I was happy. &amp;nbsp;&lt;/p&gt;

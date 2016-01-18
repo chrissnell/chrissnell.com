@@ -50,12 +50,13 @@
 
 <p>To create the virtual null modem cable, run socat like this:</p>
 
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%">% socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+% socat -d -d pty,raw,echo=0 pty,raw,echo=0
 
 2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/3
 2014/08/10 19:08:28 socat[25083] N PTY is /dev/pts/4
 2014/08/10 19:08:28 socat[25083] N starting data transfer loop with FDs [3,3] and [5,5]
-</pre></div>
+
 
 
 <p>As you can see above, socat will respond with two virtual serial ports (ptys). &nbsp;In the example above, they are /dev/pts/3 and /dev/pts/4.</p>
@@ -64,14 +65,14 @@
 
 <p>If you are debugging an APRS client that uses KISS-over-TCP, you can use my <a href="http://github.com/chrissnell/tnc-server">tnc-server</a> utility to bridge the virtual serial port and the network. &nbsp;Simply tell tnc-server to attach to one of those virtual ports and it will open a network listener that you can connect your KISS-over-TCP client&nbsp;to:</p>
 
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%">./tnc-server -port=/dev/pts/3 -listen=0.0.0.0:6700
-</pre></div>
+
+./tnc-server -port=/dev/pts/3 -listen=0.0.0.0:6700
 
 
 <p>&nbsp;If you want to attach two KISS-over-TCP clients to each other, simply fire up a second instance of tnc-server that listens on a different port.</p>
 
-<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"> ./tnc-server -port=/dev/pts/4 -listen=0.0.0.0:6701
-</pre></div>
+<p>
+ ./tnc-server -port=/dev/pts/4 -listen=0.0.0.0:6701
 </p>
 
 <p>From there, connect one APRS client to &nbsp;&lt;your_machines_IP&gt; &nbsp;port 6700 and the other client to port 6701.</p>
