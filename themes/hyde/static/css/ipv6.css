@@ -1,5 +1,6 @@
 .ipv6-detect {
-    color: #215e21;
+    color: #fff;
+    margin-bottom: 1.5em;
 }
 .ipv4-detect {
     display: none;
