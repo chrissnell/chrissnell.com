@@ -24,7 +24,7 @@ give it a unique class, like ```ipv6-detect```:
 Next, you need to create two CSS files in your document root, one for IPv4 users
 and one for IPv6 users.  For example:
 
-/css/ipv6.css
+In /css/ipv6.css:
 {{< highlight css >}}
 /* Anything with this selector will be displayed on the page */
 .ipv6-detect {
