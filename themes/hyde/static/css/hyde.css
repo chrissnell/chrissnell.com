@@ -271,15 +271,20 @@ a.sidebar-nav-item:focus {
 
 h3.links {
     margin-top: 10px;
-}
-h3.links {
     color: #fff;
 }
 h3.links a {
     color: #AECAD4;
 }
+
 .sidebar-links {
     padding-bottom: 80px;
+}
+
+.about {
+    color: #fff;
+    margin-bottom: -bottom: 2.5em;
+    margin-top: 0;
 }
 
 
