@@ -2,7 +2,7 @@
 Categories = ["Nerd", "Linux", "IPv6"]
 Description = "Debugging APRS clients with socat and tnc-server"
 Tags = ["Nerd", "Linux", "IPv6"]
-date = "2016-12-17T00:00:00-08:00"
+date = "2016-01-17T00:00:00-08:00"
 menu = "main"
 title = "Detecting IPv6 clients on a static site with nginx"
 
