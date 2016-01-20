@@ -283,7 +283,7 @@ h3.links a {
 
 .about {
     color: #fff;
-    margin-bottom: -bottom: 2.5em;
+    margin-bottom: 2.5em;
     margin-top: 0;
 }
 
@@ -313,4 +313,27 @@ pre {
     font-family: 'Inconsolata';
     font-weight: normal;
     color: #444;
+}
+
+/* New Logo */
+.logo-box {
+  left: 50%;
+  transform: translate(-50%, 0%) rotate(45deg);
+  height: 5em;
+  width: 5em;
+  background: #FFA600;
+  position: relative;
+  margin-bottom: 50px;
+
+}
+
+.logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3em;
+  color: #222;
 }
